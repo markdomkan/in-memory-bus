@@ -1,0 +1,19 @@
+{
+  "name": "js-events",
+  "version": "1.0.0",
+  "description": "A simple event gestor for raw js",
+  "main": "js-events.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markdomkan/js-events.git"
+  },
+  "author": "Mark Domkan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markdomkan/js-events/issues"
+  },
+  "homepage": "https://github.com/markdomkan/js-events#readme"
+}
