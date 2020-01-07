@@ -1,5 +1,5 @@
 {
-  "name": "js-events",
+  "name": "@markdomkan/js-events",
   "version": "1.0.0",
   "description": "A simple event gestor for raw js",
   "main": "js-events.js",
