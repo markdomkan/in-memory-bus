@@ -1,4 +1,4 @@
-class JsEvents {
+export class JsEvents {
   constructor(obj) {
     this._jsEventsCallbacks = [];
     if (obj) {
@@ -39,8 +39,4 @@ class JsEvents {
   emitters() {
     return Object.keys(this._jsEventsCallbacks);
   }
-}
-
-if (typeof module != undefined) {
-  module.exports = JsEvents;
 }
