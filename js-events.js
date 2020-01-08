@@ -17,11 +17,11 @@ export class JsEvents {
     return this;
   }
 
-  emit(event) {
+  emit(event, data) {
     if (this._jsEventsCallbacks[event] != null) {
       this._jsEventsCallbacks[event].forEach(fn => {
         if (typeof fn === "function") {
-          fn();
+          fn(data);
         }
       });
     }
