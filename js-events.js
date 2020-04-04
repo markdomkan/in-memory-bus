@@ -1,4 +1,4 @@
-export class JsEvents {
+export default class JsEvents {
   constructor(obj) {
     this._jsEventsCallbacks = [];
     if (obj) {
