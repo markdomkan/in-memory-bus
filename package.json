@@ -1,19 +1,29 @@
 {
-  "name": "@markdomkan/js-events",
-  "version": "1.0.5",
-  "description": "A simple event gestor for raw js",
-  "main": "js-events.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "@markdomkan/in-memory-bus",
+  "version": "2.0.0",
+  "description": "A simple event bus for JavaScript & TypeScript",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markdomkan/js-events.git"
+    "url": "git+https://github.com/markdomkan/in-memory-bus.git"
+  },
+  "scripts": {
+    "test": "bun test",
+    "build": "tsc ./main.ts --declaration --lib es6 --target es6 --outDir ./dist"
+  },
+  "engines": {
+    "bun": ">=1.1"
   },
   "author": "Mark Domkan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/markdomkan/js-events/issues"
+    "url": "https://github.com/markdomkan/in-memory-bus/issues"
   },
-  "homepage": "https://github.com/markdomkan/js-events#readme"
+  "homepage": "https://github.com/markdomkan/in-memory-bus#readme",
+  "devDependencies": {
+    "@types/bun": "^1.1.6",
+    "typescript": "^5.5.4"
+  }
 }
