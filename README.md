@@ -11,6 +11,7 @@
 - **Event Registration**: Register event listeners that can be triggered when an event is emitted.
 - **One-Time Event Listeners**: Register listeners that are invoked only once for an event and then automatically removed.
 - **Event Emission**: Emit events with associated data to trigger registered listeners.
+- **Asynchronous Event Emission**: Emit events and wait for all listeners to complete, either in parallel or sequentially.
 - **Event Listener Management**: Remove individual listeners or all listeners for a specific event.
 - **Event Inspection**: Check if an event has listeners, retrieve all listeners for an event, and list all registered events.
 - **Event Clearing**: Clear all events and listeners.
@@ -101,6 +102,21 @@ const listeners = eventBus.getListeners('userLoggedIn'); // undefined or Set<Fun
 const eventNames = eventBus.getEventNames(); // []
 ```
 
+### Asynchronous Event Emission
+
+```typescript
+eventBus.on('userLoggedIn', async (data) => {
+  await someAsyncOperation(data.userId);
+  console.log(`User logged in: ${data.userId}`);
+});
+
+// Emit and wait for all listeners to complete in parallel
+await eventBus.emitAwaitAll('userLoggedIn', { userId: '12345' });
+
+// Emit and wait for all listeners to complete sequentially
+await eventBus.emitAwaitSerial('userLoggedIn', { userId: '67890' });
+```
+
 ## API Reference
 
 ### `on<T extends keyof Events>(event: T, callback: (data: Events[T]) => void): void`
@@ -114,6 +130,12 @@ Removes all listeners for the specified event.
 
 ### `emit<T extends keyof Events>(event: T, data: Events[T]): void`
 Emits the specified event, triggering all registered listeners with the provided data.
+
+### `emitAwaitAll<T extends keyof Events>(event: T, data: Events[T]): Promise<void>`
+Emits the specified event and waits for all listeners to complete their execution in parallel.
+
+### `emitAwaitSerial<T extends keyof Events>(event: T, data: Events[T]): Promise<void>`
+Emits the specified event and waits for each listener to complete its execution sequentially.
 
 ### `once<T extends keyof Events>(event: T, callback: (data: Events[T]) => void): void`
 Registers a one-time listener for the specified event, which is removed after the event is emitted.
