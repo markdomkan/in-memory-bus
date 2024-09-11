@@ -38,6 +38,24 @@ export declare class InMemoryBus<Events extends {
      */
     emit<T extends keyof Events>(event: T, data: Events[T]): void;
     /**
+     * Emits an event with the specified data and waits for all listeners to complete.
+     *
+     * @template T - The type of event.
+     * @param {T} event - The event to emit.
+     * @param {Events[T]} data - The data associated with the event.
+     * @returns {Promise<void>} - A promise that resolves when all listeners have completed.
+     */
+    emitAwaitAll<T extends keyof Events>(event: T, data: Events[T]): Promise<void>;
+    /**
+     * Emits an event with the specified data and waits for each listener to complete in sequence.
+     *
+     * @template T - The type of event.
+     * @param {T} event - The event to emit.
+     * @param {Events[T]} data - The data associated with the event.
+     * @returns {Promise<void>} - A promise that resolves when all listeners have completed in sequence.
+     */
+    emitAwaitSerial<T extends keyof Events>(event: T, data: Events[T]): Promise<void>;
+    /**
      * Registers a callback function to be executed only once when the specified event occurs.
      *
      * @template T - The type of the event.
