@@ -116,7 +116,7 @@ describe("InMemoryBus", () => {
     eventBus.on("messageReceived", callback2);
 
     const start = Date.now();
-    await eventBus.emitAwaitAll("messageReceived", {
+    await eventBus.emitAwaitParallel("messageReceived", {
       message: "Hello, World!",
     });
     const duration = Date.now() - start;

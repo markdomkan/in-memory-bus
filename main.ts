@@ -70,7 +70,7 @@ export class InMemoryBus<Events extends { [event: string]: any }> {
    * @param {Events[T]} data - The data associated with the event.
    * @returns {Promise<void>} - A promise that resolves when all listeners have completed.
    */
-  public async emitAwaitAll<T extends keyof Events>(
+  public async emitAwaitParallel<T extends keyof Events>(
     event: T,
     data: Events[T],
   ): Promise<void> {

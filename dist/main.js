@@ -73,7 +73,7 @@ export class InMemoryBus {
      * @param {Events[T]} data - The data associated with the event.
      * @returns {Promise<void>} - A promise that resolves when all listeners have completed.
      */
-    emitAwaitAll(event, data) {
+    emitAwaitParallel(event, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.events.has(event)) {
                 return;

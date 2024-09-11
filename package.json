@@ -1,6 +1,6 @@
 {
   "name": "@markdomkan/in-memory-bus",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A simple event bus for JavaScript & TypeScript",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "bun test",
-    "build": "tsc ./main.ts --declaration --lib es6 --target es6 --outDir ./dist"
+    "build": "tsc ./main.ts --declaration --skipLibCheck --lib es6 --target es6 --outDir ./dist ",
+    "publish": "bun run build && npm publish --access public"
   },
   "engines": {
     "bun": ">=1.1"
