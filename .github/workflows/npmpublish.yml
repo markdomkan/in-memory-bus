@@ -23,6 +23,8 @@ jobs:
           path: | 
             dist
             package.json
+            README.md
+            image.png
   deploy:
     needs: test
     runs-on: ubuntu-latest
