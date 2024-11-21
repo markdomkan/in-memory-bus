@@ -2,13 +2,21 @@ name: Node.js Package
 on:
   push:
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun test
+    
   publish-npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v1
       - run: bun install
-      - run: npm publish --access public
+      - run: bun run build
+      - run: bun publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
