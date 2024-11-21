@@ -2,7 +2,7 @@ name: Node.js Package
 on:
   push:
 jobs:
-  test:
+  test_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,30 +19,3 @@ jobs:
         run: bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
-      # - name: Archive production artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: dist
-      #     retention-days: 1
-      #     path: | 
-      #       dist
-      #       package.json
-      #       README.md
-      #       image.png
-  # deploy:
-  #   needs: test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download production build
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: dist
-  #     - name: Install node
-  #       uses: actions/setup-node@v1
-  #     - run: npm publish --access public
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
-  #     - name: Remove dist
-  #       uses: geekyeggo/delete-artifact@v5
-  #       with:
-  #         name: dist
