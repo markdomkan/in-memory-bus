@@ -2,7 +2,7 @@ name: Node.js Package
 on:
   push:
 jobs:
-  test and deploy:
+  test_and_deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
