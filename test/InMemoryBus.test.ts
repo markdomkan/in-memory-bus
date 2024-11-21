@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
-import { InMemoryBus } from "./main";
+import { InMemoryBus } from "../main";
 
 interface AppEvents {
   userLoggedIn: { userId: string };

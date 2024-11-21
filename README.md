@@ -1,10 +1,21 @@
-# InMemoryBus
+# Memory BUSES
 
 ![alt text](image.png)
 
 ## Overview
+This repository provides two TypeScript implementations for event bus patterns:
 
-`InMemoryBus` is a TypeScript class that provides a simple in-memory event bus system. It allows you to register, emit, and manage events within your application. This is particularly useful for implementing a publish-subscribe pattern, where different parts of your application can communicate with each other without being tightly coupled.
+1. `InMemoryBus`: A simple in-memory event bus system that implements the publish-subscribe pattern. It allows different parts of your application to communicate without tight coupling through event registration and emission.
+
+2. `MiddlewareBus`: An enhanced event bus that adds middleware support. It allows you to intercept and validate events before they're processed, with features like:
+  - Event queue management for rejected events
+  - Middleware validation before event emission
+  - Re-evaluation of queued events
+  - Type-safe event and payload handling
+
+Both implementations are useful for different scenarios:
+- Use `InMemoryBus` for simple event-driven architectures
+- Use `MiddlewareBus` when you need validation, queuing, or control over event flow
 
 ## Features
 
@@ -15,14 +26,16 @@
 - **Event Listener Management**: Remove individual listeners or all listeners for a specific event.
 - **Event Inspection**: Check if an event has listeners, retrieve all listeners for an event, and list all registered events.
 - **Event Clearing**: Clear all events and listeners.
-
-## Installation
-
-To use `InMemoryBus`, you can copy the class definition into your TypeScript project. There are no external dependencies.
+- **Middleware Support**: Intercept and validate events before they are processed.
+- **Event Queue Management**: Queue events that fail middleware validation.
+- **Re-evaluation of Queued Events**: Re-evaluate and process queued events when conditions change.
+- **Type-safe Event and Payload Handling**: Ensure type safety for events and their payloads.
 
 ## Usage
 
-### Basic Example
+### InMemoryBus
+
+#### Basic Example
 
 ```typescript
 // Define event types
@@ -45,7 +58,7 @@ eventBus.emit('userLoggedIn', { userId: '12345' });
 // Output: User logged in with ID: 12345
 ```
 
-### Registering a One-Time Event Listener
+#### Registering a One-Time Event Listener
 
 ```typescript
 eventBus.once('messageReceived', (data) => {
@@ -59,50 +72,7 @@ eventBus.emit('messageReceived', { message: 'Hello, World!' });
 eventBus.emit('messageReceived', { message: 'Another message' });
 ```
 
-### Removing Event Listeners
-
-```typescript
-const callback = (data: { userId: string }) => {
-  console.log(`User logged in with ID: ${data.userId}`);
-};
-
-eventBus.on('userLoggedIn', callback);
-
-// Remove the specific listener
-eventBus.off('userLoggedIn', callback);
-
-// Emit the event - callback won't be invoked
-eventBus.emit('userLoggedIn', { userId: '12345' });
-```
-
-### Clearing All Event Listeners
-
-```typescript
-eventBus.on('userLoggedIn', (data) => console.log(`User: ${data.userId}`));
-eventBus.on('messageReceived', (data) => console.log(`Message: ${data.message}`));
-
-// Clear all listeners
-eventBus.clear();
-
-// No output as all listeners have been removed
-eventBus.emit('userLoggedIn', { userId: '12345' });
-eventBus.emit('messageReceived', { message: 'Hello' });
-```
-
-### Inspecting Registered Events
-
-```typescript
-// Check if an event has listeners
-const hasUserLoggedInListeners = eventBus.hasListeners('userLoggedIn'); // false
-
-// Get all listeners for an event
-const listeners = eventBus.getListeners('userLoggedIn'); // undefined or Set<Function>
-
-// Get a list of all registered event names
-const eventNames = eventBus.getEventNames(); // []
-```
-
-### Asynchronous Event Emission
+#### Asynchronous Event Emission
 
 ```typescript
 eventBus.on('userLoggedIn', async (data) => {
@@ -117,40 +87,45 @@ await eventBus.emitAwaitAll('userLoggedIn', { userId: '12345' });
 await eventBus.emitAwaitSerial('userLoggedIn', { userId: '67890' });
 ```
 
-## API Reference
+### MiddlewareBus
 
-### `on<T extends keyof Events>(event: T, callback: (data: Events[T]) => void): void`
-Registers a callback function to be invoked when the specified event is emitted.
+#### Basic Example
 
-### `off<T extends keyof Events>(event: T, callback: (data: Events[T]) => void): void`
-Removes the specified callback from the event's listener set.
+```typescript
+// Define event types
+interface AppEvents {
+  userLoggedIn: string | number;
+  messageReceived: string;
+}
 
-### `offAll<T extends keyof Events>(event: T): void`
-Removes all listeners for the specified event.
+// Create an instance of MiddlewareBus with middleware
+const eventBus = new MiddlewareBus<AppEvents>({
+  userLoggedIn: [
+    (data: string | number) => typeof data === 'string' ? data !== 'blocked' : data !== 0,
+  ],
+  messageReceived: [
+    async (payload: string) => payload.length > 0,
+  ],
+});
 
-### `emit<T extends keyof Events>(event: T, data: Events[T]): void`
-Emits the specified event, triggering all registered listeners with the provided data.
+// Register an event listener
+eventBus.on('userLoggedIn', (data) => {
+  console.log(`User logged in with data: ${data}`);
+});
 
-### `emitAwaitAll<T extends keyof Events>(event: T, data: Events[T]): Promise<void>`
-Emits the specified event and waits for all listeners to complete their execution in parallel.
+// Emit an event that passes middleware
+await eventBus.emit('userLoggedIn', 'user123');
+// Output: User logged in with data: user123
 
-### `emitAwaitSerial<T extends keyof Events>(event: T, data: Events[T]): Promise<void>`
-Emits the specified event and waits for each listener to complete its execution sequentially.
+// Emit an event that fails middleware
+await eventBus.emit('userLoggedIn', 'blocked');
+// No output, event is queued
 
-### `once<T extends keyof Events>(event: T, callback: (data: Events[T]) => void): void`
-Registers a one-time listener for the specified event, which is removed after the event is emitted.
+// Re-evaluate queued events after changing conditions
+await eventBus.reEval('userLoggedIn');
+// Output: User logged in with data: user123 (if conditions change)
+```
 
-### `clear(): void`
-Clears all events and their listeners.
-
-### `getListeners<T extends keyof Events>(event: T): Set<Function> | undefined`
-Returns the set of listeners registered for the specified event.
-
-### `hasListeners<T extends keyof Events>(event: T): boolean`
-Checks if the specified event has any listeners registered.
-
-### `getEventNames(): string[]`
-Returns an array of all registered event names.
 
 ## License
 
