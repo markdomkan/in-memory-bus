@@ -15,30 +15,34 @@ jobs:
         run: bun test
       - name: Build
         run: bun run build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          retention-days: 1
-          path: | 
-            dist
-            package.json
-            README.md
-            image.png
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download production build
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-      - name: Install node
-        uses: actions/setup-node@v1
-      - run: npm publish --access public
+      - name: deploy with Bun
+        run: bun publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
-      - name: Remove dist
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: dist
+          NPM_CONFIG_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
+      # - name: Archive production artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dist
+      #     retention-days: 1
+      #     path: | 
+      #       dist
+      #       package.json
+      #       README.md
+      #       image.png
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download production build
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: dist
+  #     - name: Install node
+  #       uses: actions/setup-node@v1
+  #     - run: npm publish --access public
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
+  #     - name: Remove dist
+  #       uses: geekyeggo/delete-artifact@v5
+  #       with:
+  #         name: dist
