@@ -38,5 +38,5 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOCKEN}}
       - name: Remove dist
         uses: geekyeggo/delete-artifact@v5
-          with:
+        with:
           name: dist
