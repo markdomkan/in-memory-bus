@@ -92,38 +92,28 @@ await eventBus.emitAwaitSerial('userLoggedIn', { userId: '67890' });
 #### Basic Example
 
 ```typescript
-// Define event types
-interface AppEvents {
-  userLoggedIn: string | number;
-  messageReceived: string;
-}
+let bloqued = true;
 
 // Create an instance of MiddlewareBus with middleware
-const eventBus = new MiddlewareBus<AppEvents>({
-  userLoggedIn: [
-    (data: string | number) => typeof data === 'string' ? data !== 'blocked' : data !== 0,
-  ],
-  messageReceived: [
-    async (payload: string) => payload.length > 0,
-  ],
+const eventBus = new MiddlewareBus({
+    isblocked: [
+        () => !bloqued
+    ],
 });
 
 // Register an event listener
-eventBus.on('userLoggedIn', (data) => {
-  console.log(`User logged in with data: ${data}`);
+eventBus.on("isblocked", (data)=>{
+  console.log(data); 
 });
 
-// Emit an event that passes middleware
-await eventBus.emit('userLoggedIn', 'user123');
-// Output: User logged in with data: user123
+// Emit an event. The listener won't be triggered because the middleware blocks it.
+await eventBus.emit("isblocked", undefined);
 
-// Emit an event that fails middleware
-await eventBus.emit('userLoggedIn', 'blocked');
-// No output, event is queued
+// Modify the blocking condition
+bloqued = false;
 
-// Re-evaluate queued events after changing conditions
-await eventBus.reEval('userLoggedIn');
-// Output: User logged in with data: user123 (if conditions change)
+// Re-evaluate the event. The listener will now be triggered.
+await eventBus.reEval("isblocked");
 ```
 
 
@@ -132,9 +122,4 @@ await eventBus.reEval('userLoggedIn');
 This code is provided as-is with no warranty. Feel free to use it in your projects. Modify and redistribute as you see fit.
 
 ## Contributing
-
 Contributions are welcome! Please feel free to submit issues or pull requests.
-
----
-
-This `README.md` provides a comprehensive guide on how to use the `InMemoryBus` class, including installation, usage examples, and a detailed API reference.

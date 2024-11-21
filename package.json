@@ -1,6 +1,6 @@
 {
   "name": "@markdomkan/in-memory-bus",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A simple event bus for JavaScript & TypeScript",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
